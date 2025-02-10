@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  # MongoDB
+  mongodb-dev:
+    image: mongo:6
+    container_name: mongodb-dev
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: tododb
+    volumes:
+      - ./seeder/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
+      - ./seeder/seed.js:/docker-entrypoint-initdb.d/seed.js:ro
+    ports:
+      - "27017:27017"
+    networks:
+      - todo-network
+
+  # Dev environment
+  todoapp-dev:
+    build:
+      context: .
+      dockerfile: dev.dockerfile      # Use the dev Dockerfile
+    container_name: todoapp-dev
+    volumes:
+      - .:/app                       # Mount local source into /app
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://mongodb-dev:27017/tododb"
+      SPRING_DATA_MONGODB_DATABASE: "tododb"
+      SERVER_ADDRESS: "0.0.0.0"
+      PORT: "8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb-dev
+    networks:
+      - todo-network
+    # The default command in Dockerfile.dev is "mvn spring-boot:run",
+    # but you could also override here if you want:
+    # command: ["mvn", "clean", "spring-boot:run"]
+
+
+networks:
+  todo-network:
+    driver: bridge
