@@ -5,10 +5,10 @@
 - A local Spring Boot server with Java 21
 - Docker & Docker Compose
 #### Table of content:
-- 1 API Specification
-- 1 How to Run Unit Test
-- 2 How to Test API with real Database
-- 3 Project Structure for the Main Codebase
+- API Specification
+- How to Run Unit Test
+- How to Test API with real Database
+- Project Structure for the Main Codebase
 
 ## API Specification
 
